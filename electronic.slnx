@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/electronic.ui/" />
+  <Project Path="electronic.api/electronic.api.csproj" />
+  <Project Path="electronic.Application/electronic.Application.csproj" />
+  <Project Path="electronic.Domain/electronic.Domain.csproj" />
+  <Project Path="electronic.Infrastructure/electronic.Infrastructure.csproj" />
+</Solution>
