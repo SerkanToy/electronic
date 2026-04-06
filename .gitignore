@@ -485,7 +485,7 @@ $RECYCLE.BIN/
 
 .gitignore
 
-# technicalservicesprogram.DataAccess/Context/*.*
+# electronik.Domain/Context/*.*
 # technicalservicesprogram.DataAccess/bin/*.*
 # technicalservicesprogram.DataAccess/bin
 # technicalservicesprogram.DataAccess/obj/*.*
