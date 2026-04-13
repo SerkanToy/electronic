@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace electronic.Domain.Entities.Abstractions
+namespace electronic.Domain.Abstractions
 {
     public abstract class Entity
     {
@@ -26,6 +26,7 @@ namespace electronic.Domain.Entities.Abstractions
         public string? UpdateUserName => GetUpdateUserName();
         public bool IsDeleted { get; set; }
         public DateTimeOffset? DeleteAt { get; set; }
+        public string? DeleteUserName => GetDeleteUserName();
         public Guid? DeleteUserId { get; set; }
         private string GetCreateUserName()
         {
@@ -51,6 +52,21 @@ namespace electronic.Domain.Entities.Abstractions
                 .GetRequiredService<UserManager<UserApp>>();
 
             UserApp appUser = userManager.Users.First(p => p.Id == UpdateUserId);
+
+            return appUser.Name + " " + appUser.SurName + " (" + appUser.Email + ")";
+        }
+
+        private string? GetDeleteUserName()
+        {
+            if (UpdateUserId is null) return null;
+
+            HttpContextAccessor httpContextAccessor = new();
+            var userManager = httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetRequiredService<UserManager<UserApp>>();
+
+            UserApp appUser = userManager.Users.First(p => p.Id == DeleteUserId);
 
             return appUser.Name + " " + appUser.SurName + " (" + appUser.Email + ")";
         }

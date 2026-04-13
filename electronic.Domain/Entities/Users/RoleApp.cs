@@ -2,11 +2,11 @@
 
 namespace electronik.Domain.Entities.Users
 {
-    public class RoleApp: IdentityRole<string>
+    public class RoleApp: IdentityRole<Guid>
     {
         public RoleApp()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.CreateVersion7();
         }
     }
 }

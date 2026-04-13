@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace electronik.Domain.Entities.Users
 {
-    public class UserClaim : IdentityUserClaim<string>
+    public class UserClaim : IdentityUserClaim<Guid>
     {
     }
 }

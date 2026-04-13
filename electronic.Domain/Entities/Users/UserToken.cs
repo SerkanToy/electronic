@@ -2,7 +2,7 @@
 
 namespace electronik.Domain.Entities.Users
 {
-    public class UserToken : IdentityUserToken<string>
+    public class UserToken : IdentityUserToken<Guid>
     {
     }
 }
