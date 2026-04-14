@@ -13,7 +13,6 @@ namespace electronik.Domain.Entities.Users
         }
         public string Name { get; set; }
         public string SurName { get; set; }
-        public string SicilNo { get; set; }
         public string Salt { get; set; }
         public ICollection<Address>? Addresses { get; set; }
 

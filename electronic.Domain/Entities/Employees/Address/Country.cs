@@ -9,6 +9,7 @@ namespace electronic.Domain.Entities.Employees.Address
             Id = Guid.CreateVersion7();
         }
         public Guid Id { get; set; }
-        public ICollection<Address> Address { get; set; }
+        public string Name { get; set; }
+        public ICollection<City> City { get; set; }
     }
 }

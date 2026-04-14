@@ -2,18 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace electronic.Domain.Abstractions
 {
     public abstract class Entity
     {
-        public Entity()
-        {
-            Id = Guid.CreateVersion7();
-        }
         public Guid Id { get; set; }
 
         #region Audit Log

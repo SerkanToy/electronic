@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using electronic.Domain.Abstractions;
 
 namespace electronic.Domain.Entities.Employees
 {
-    public class ProductJoinCoupon
+    public class ProductJoinCoupon: Entity
     {
         public ProductJoinCoupon()
         {
             Id = Guid.CreateVersion7();
         }
-        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
         public Guid CouponId { get; set; }

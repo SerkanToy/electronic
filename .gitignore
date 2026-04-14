@@ -485,17 +485,26 @@ $RECYCLE.BIN/
 
 .gitignore
 
-# electronik.Domain/Context/*.*
-# technicalservicesprogram.DataAccess/bin/*.*
-# technicalservicesprogram.DataAccess/bin
-# technicalservicesprogram.DataAccess/obj/*.*
-# technicalservicesprogram.DataAccess/obj
+electronik.Domain/Context/*.*
+electronik.Domain/bin/*.*
+electronik.Domain/bin
+electronik.Domain/obj/*.*
+electronik.Domain/obj
 
+electronic.Infrastructure/Configurations
+electronic.Infrastructure/Configurations/*.*
+electronic.Infrastructure/Configurations/
+electronic.Infrastructure/Context
+electronic.Infrastructure/Context/
+electronic.Infrastructure/Context/*.*
+electronic.Infrastructure/Migrations
+electronic.Infrastructure/Migrations/*.*
+electronic.Infrastructure/Migrations/
 
-# technicalservicesprogram.Broadcast/bin/*.*
-# technicalservicesprogram.Broadcast/bin
-# technicalservicesprogram.Broadcast/obj/*
-# technicalservicesprogram.Broadcast/obj
-# technicalservicesprogram.Broadcast/appsettings.json
-# technicalservicesprogram.Broadcast/appsettings.Development.json
+electronik.api/bin/*.*
+electronik.api/bin
+electronik.api/obj/*
+electronik.api/obj
+electronik.api/appsettings.json
+electronik.api/appsettings.Development.json
 

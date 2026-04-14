@@ -11,6 +11,8 @@ public class Address : Entity
         Id = Guid.CreateVersion7();
     }
     public Guid Id { get; set; }
+    public string Title { get; set; }
+    public string FulLAddress { get; set; }
     public Guid CountryId { get; set; }
     public Country Country { get; set; }
     public Guid CityId { get; set; }
@@ -19,6 +21,5 @@ public class Address : Entity
     public Town Town { get; set; }
     public Guid UserAppId { get; set; }
     public UserApp UserApp { get; set; }
-    public string Title { get; set; }
-    public string FulLAddress { get; set; }
+    
 }

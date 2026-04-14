@@ -1,4 +1,5 @@
 ﻿using electronic.Domain.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace electronic.Domain.Entities.Employees
 {
@@ -8,11 +9,12 @@ namespace electronic.Domain.Entities.Employees
         {
             Id = Guid.CreateVersion7();
         }
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string? icon { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal RegulerPrice { get; set; }
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public decimal DiscountPrice { get; set; }
         public string? Note { get; set; }
         public ICollection<Galleri> Galleries { get; set; }

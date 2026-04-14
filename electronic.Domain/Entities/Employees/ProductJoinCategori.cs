@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using electronic.Domain.Abstractions;
 
 namespace electronic.Domain.Entities.Employees
 {
-    public class ProductJoinCategori
+    public class ProductJoinCategori: Entity
     {
         public ProductJoinCategori()
         {
             Id = Guid.CreateVersion7();
         }
-        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
-        public Guid Categori { get; set; }
-        public Categori CategoriId { get; set; }
+        public Guid CategoriId { get; set; }
+        public Categori Categori { get; set; }
     }
 }
