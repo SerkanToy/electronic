@@ -17,7 +17,7 @@ namespace electronik.Domain.Entities.Users
         public ICollection<Address>? Addresses { get; set; }
 
         #region Audit Log
-        public DateTimeOffset CreateAt { get; set; }
+            public DateTimeOffset CreateAt { get; set; }
             public Guid CreateUserId { get; set; } = default!;
             public DateTimeOffset? UpdateAt { get; set; }
             public Guid? UpdateUserId { get; set; }

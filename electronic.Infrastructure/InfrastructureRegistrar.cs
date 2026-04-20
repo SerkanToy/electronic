@@ -1,4 +1,8 @@
-﻿using electronic.Infrastructure.Context;
+﻿using electronic.Application.Interface;
+using electronic.Application.Services;
+using electronic.Infrastructure.Context;
+using electronic.Infrastructure.Repositories;
+using electronic.Infrastructure.Services;
 using electronik.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +24,9 @@ namespace electronic.Infrastructure
             services.AddIdentityCore<UserApp>()
                 .AddRoles<RoleApp>()
                 .AddEntityFrameworkStores<CilingirogluDbContext>();
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddHttpContextAccessor();
 
             return services;
         }

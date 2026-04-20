@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace electronic.Domain.Abstractions
 {
@@ -19,8 +20,11 @@ namespace electronic.Domain.Abstractions
         public string? UpdateUserName => GetUpdateUserName();
         public bool IsDeleted { get; set; }
         public DateTimeOffset? DeleteAt { get; set; }
+        [NotMapped]
         public string? DeleteUserName => GetDeleteUserName();
         public Guid? DeleteUserId { get; set; }
+
+        
         private string GetCreateUserName()
         {
             HttpContextAccessor httpContextAccessor = new();
