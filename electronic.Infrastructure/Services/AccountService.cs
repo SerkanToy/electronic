@@ -65,6 +65,27 @@ namespace electronic.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(refreshToken))
                 throw new RefreshTokenException("Refresh Token Yok.");
+
+            var user = await userRepository.GetUserByRefreshTokenAsync(refreshToken);
+
+            if(user is null)
+                throw new RefreshTokenException("Refresh Token için kullanıcı belirlenemedi.");
+
+            if (user.RefreshTokenExpiresAtUtc < DateTime.UtcNow.AddDays(7))
+                throw new RefreshTokenException("Refresh Token süresi doldu.");
+
+            var (jwtToken, expirationDateInUtc) = authTokenProcessor.GenerateJwtToken(user);
+            var refreshTokenValue = authTokenProcessor.GenerateRefreshToken();
+
+            var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddDays(7);
+
+            user.RefreshToken = refreshTokenValue;
+            user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
+
+            await userManager.UpdateAsync(user);
+
+            authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, expirationDateInUtc);
+            authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", user.RefreshToken, refreshTokenExpirationDateInUtc);
         }
     }
 }
