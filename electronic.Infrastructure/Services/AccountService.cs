@@ -47,7 +47,18 @@ namespace electronic.Infrastructure.Services
             var user = await userManager.FindByEmailAsync(loginRequest.Email);
             var passwordCheck = await userManager.CheckPasswordAsync(user, loginRequest.Password);
             if (user == null || !passwordCheck)
-                throw new 
+                throw new LoginFailedException(loginRequest.Email);
+
+            var (jwtToken, expirationDateInUtc) = authTokenProcessor.GenerateJwtToken(user);
+            var refreshToken = authTokenProcessor.GenerateRefreshToken();
+
+            var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddDays(7);
+
+            await userManager.UpdateAsync(user);
+
+            authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, expirationDateInUtc);
+            authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", user.RefreshToken, refreshTokenExpirationDateInUtc);
+
         }                
 
         public async Task RefreshTokenAsync(string? refreshToken)
