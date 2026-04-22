@@ -42,9 +42,12 @@ namespace electronic.Infrastructure.Services
             }
         }
 
-        public Task LoginAsync(LoginRequest loginRequest)
+        public async Task LoginAsync(LoginRequest loginRequest)
         {
-            throw new NotImplementedException();
+            var user = await userManager.FindByEmailAsync(loginRequest.Email);
+            var passwordCheck = await userManager.CheckPasswordAsync(user, loginRequest.Password);
+            if (user == null || !passwordCheck)
+                throw new 
         }                
 
         public async Task RefreshTokenAsync(string? refreshToken)
