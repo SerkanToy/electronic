@@ -1,10 +1,9 @@
 ﻿using electronic.Application.Abstracts;
+using electronic.Application.Interface;
+using electronic.Domain.Exceptions;
 using electronic.Domain.Requests;
 using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace electronic.Infrastructure.Services
 {
@@ -12,25 +11,44 @@ namespace electronic.Infrastructure.Services
     {
         private readonly IAuthTokenProcessor authTokenProcessor;
         private readonly UserManager<UserApp> userManager;
-        private readonly SignInManager<UserApp> signInManager;
+        private readonly IUserRepository userRepository;
 
-        public AccountService()
+        public AccountService(IAuthTokenProcessor authTokenProcesso, 
+            UserManager<UserApp> userManager,
+            IUserRepository userRepository)
         {
-            
+            this.userManager = userManager;
+            this.authTokenProcessor = authTokenProcesso;
+            this.userRepository = userRepository;
+        }
+
+        public async Task RegisterAsync(RegisterRequest registerRequest)
+        {
+            var userExists = await userManager.FindByEmailAsync(registerRequest.Email) != null;
+            if (userExists)
+                throw new UserAlreadyExistsException(email: registerRequest.Email);
+
+            IdentityResult result = await userManager.CreateAsync(new UserApp
+            {
+                Email = registerRequest.Email,
+                UserName = registerRequest.Email.Split("@")[0],
+                Name = registerRequest.Name,
+                SurName = registerRequest.SurName,
+            },registerRequest.Password);
+
+            if (!result.Succeeded) 
+            {
+                throw new RegistrationFailedException(result.Errors.Select(e => e.Description));
+            }
         }
 
         public Task LoginAsync(LoginRequest loginRequest)
         {
             throw new NotImplementedException();
-        }
+        }                
 
-        public Task RefreshTokenAsync(string? refreshToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RegisterAsync(RegisterRequest registerRequest)
-        {
+        public async Task RefreshTokenAsync(string? refreshToken)
+        {            
             throw new NotImplementedException();
         }
     }
