@@ -62,8 +62,9 @@ namespace electronic.Infrastructure.Services
         }                
 
         public async Task RefreshTokenAsync(string? refreshToken)
-        {            
-            throw new NotImplementedException();
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+                throw new RefreshTokenException("Refresh Token Yok.");
         }
     }
 }
