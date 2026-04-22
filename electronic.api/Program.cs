@@ -1,3 +1,4 @@
+using electronic.api.Handlers;
 using electronic.Application;
 using electronic.Infrastructure;
 
@@ -13,7 +14,7 @@ builder.Services.AddApplication();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 
 var app = builder.Build();
@@ -24,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler(_ => { });
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

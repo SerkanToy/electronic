@@ -1,9 +1,5 @@
 ﻿using electronic.Application.Interface;
-using electronic.Application.Services;
 using electronic.Domain.Entities.Employees;
-using electronic.Infrastructure.Services;
-using electronik.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace electronic.api.Controllers
