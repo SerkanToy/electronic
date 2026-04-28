@@ -55,9 +55,36 @@ namespace electronic.Infrastructure.Concretes
             return responseModel;
         }
 
-        public Task<ResponseModel<UserDTO>> Register(UserDTO dto)
+        public async Task<ResponseModel<UserDTO>> Register(RegisterDTO dto)
         {
-            throw new NotImplementedException();
+            var user = new UserApp
+            {
+                Name = dto.FirstName,
+                SurName = dto.LastName,
+                Email = dto.Email,
+                UserName = dto.Email
+            };
+
+            var result = await userManager.CreateAsync(user, dto.Password);
+            if(!result.Succeeded)
+            {
+                responseModel.IsSuccess = false;
+                result.Errors.ToList().ForEach(e => responseModel.Message.Add(e.Description));
+                return responseModel;
+            }
+
+            await userManager.AddToRoleAsync(user, "User");
+            var roles = await userManager.GetRolesAsync(user);
+            responseModel.IsSuccess = true;
+            responseModel.Data = new UserDTO
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = $"{user.Name} {user.SurName}",
+                Token = tokenService.CreateToken(user, roles)
+            };
+
+            return responseModel;
         }
     }
 }
