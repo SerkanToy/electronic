@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace electronic.Infrastructure.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService 
     {
         private readonly IAuthTokenProcessor authTokenProcessor;
         private readonly UserManager<UserApp> userManager;

@@ -1,5 +1,7 @@
 ﻿using electronic.Application.Abstracts;
 using electronic.Application.Interface;
+using electronic.Domain.Models;
+using electronic.Infrastructure.Concretes;
 using electronic.Infrastructure.Context;
 using electronic.Infrastructure.Options;
 using electronic.Infrastructure.Processors;
@@ -68,9 +70,12 @@ namespace electronic.Infrastructure
                     }
                 };
             });
+
             services.AddAuthorization();
+            services.AddScoped(typeof(IUnitOfWork), typeof(CilingirogluDbContext));
+            services.AddScoped(typeof(ResponseModel<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped(typeof(IAuthTokenProcessor), typeof(AuthTokenProcessor));
+            services.AddScoped(typeof(IAuthService), typeof(AuthService));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddHttpContextAccessor();
 

@@ -15,9 +15,10 @@ namespace electronic.api.Controllers
 
         [HttpGet]
         [ActionName("urunler")]
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAll()
         {
-            return productGenericRepository.GetAll().ToList();
+            var products = await productGenericRepository.GetAllAsync();
+            return products.ToList();
         }
     }
 }

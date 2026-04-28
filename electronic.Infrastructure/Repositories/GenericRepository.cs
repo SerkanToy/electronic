@@ -1,44 +1,48 @@
 ﻿using electronic.Application.Interface;
 using electronic.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace electronic.Infrastructure.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, new()
     {
         private readonly CilingirogluDbContext _context;
-        public GenericRepository(CilingirogluDbContext _context)
+        private readonly DbSet<TEntity> dbSet;
+        public GenericRepository(CilingirogluDbContext _context, DbSet<TEntity> dbSet)
         {
             this._context = _context;
+            this.dbSet = _context.Set<TEntity>();
         }
 
-        public TEntity Create(TEntity entity)
+        public async Task CreateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await dbSet.AddAsync(entity);
         }
 
-        public void Delete(TEntity entity)
+        public void Delete(Guid Id)
         {
-            throw new NotImplementedException();
+            var entity = dbSet.Find(Id)!;
+            dbSet.Update(entity);
+        } 
+
+        public async Task<TEntity> GetAsync(Guid Id)
+        {
+            return (await dbSet.FindAsync(Id))!;
         }
 
-        public TEntity Get(int id)
+        public async Task<IQueryable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return dbSet.AsQueryable();
         }
 
-        public IQueryable<TEntity> GetAll()
+        public async Task<int> SaveChangesAsync()
         {
-            return _context.Set<TEntity>();
-        }
-
-        public void SaveChanges()
-        {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync();
         }
 
         public void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            dbSet.Update(entity);
         }
     }
 }
