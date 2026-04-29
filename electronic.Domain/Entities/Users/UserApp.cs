@@ -14,8 +14,6 @@ namespace electronik.Domain.Entities.Users
         public string Name { get; set; }
         public string SurName { get; set; }
         public string Salt { get; set; }
-        public string? RefreshToken { get; set; } = null;
-        public DateTime? RefreshTokenExpiresAtUtc { get; set; } = null;
         public ICollection<Address>? Addresses { get; set; }
 
         #region Audit Log

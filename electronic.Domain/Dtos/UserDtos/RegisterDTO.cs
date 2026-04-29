@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace electronic.Domain.Dtos.UserDtos
+﻿namespace electronic.Domain.Dtos.UserDtos
 {
     public class RegisterDTO
     {

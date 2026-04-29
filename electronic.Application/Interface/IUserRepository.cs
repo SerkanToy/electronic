@@ -7,6 +7,6 @@ namespace electronic.Application.Interface
 {
     public interface IUserRepository
     {
-        Task<UserApp>? GetUserByRefreshTokenAsync(string refreshToken);
+
     }
 }

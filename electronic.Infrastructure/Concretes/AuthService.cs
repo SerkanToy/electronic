@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace electronic.Infrastructure.Concretes
 {
-    public class AuthService : IAuthService
+    public class AuthService: IAuthService
     {
         private readonly UserManager<UserApp> userManager;
         private readonly SignInManager<UserApp> signInManager;
@@ -23,6 +23,7 @@ namespace electronic.Infrastructure.Concretes
             this.tokenService = tokenService;
             this.responseModel = responseModel;
         }
+
         public async Task<ResponseModel<UserDTO>> Login(LoginDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
@@ -34,6 +35,7 @@ namespace electronic.Infrastructure.Concretes
             }
 
             var result = await signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
+            // var result = await userManager.CheckPasswordAsync(user, dto.Password);
             if (!result.Succeeded)
             {
                 responseModel.IsSuccess = false;
@@ -46,12 +48,10 @@ namespace electronic.Infrastructure.Concretes
             responseModel.Data = new UserDTO
             {
                 Id = user.Id,
-                Email = user.Email,
+                Email = user.Email!,
                 FullName = $"{user.Name} {user.SurName}",
                 Token = tokenService.CreateToken(user, roles)
             };
-
-
             return responseModel;
         }
 
@@ -62,18 +62,19 @@ namespace electronic.Infrastructure.Concretes
                 Name = dto.FirstName,
                 SurName = dto.LastName,
                 Email = dto.Email,
-                UserName = dto.Email
+                UserName = dto.Email.Split('@')[0],
             };
 
             var result = await userManager.CreateAsync(user, dto.Password);
             if(!result.Succeeded)
             {
+                responseModel.Message = new List<string>();
                 responseModel.IsSuccess = false;
                 result.Errors.ToList().ForEach(e => responseModel.Message.Add(e.Description));
                 return responseModel;
             }
 
-            await userManager.AddToRoleAsync(user, "User");
+            await userManager.AddToRoleAsync(user, "NormalUser");
             var roles = await userManager.GetRolesAsync(user);
             responseModel.IsSuccess = true;
             responseModel.Data = new UserDTO

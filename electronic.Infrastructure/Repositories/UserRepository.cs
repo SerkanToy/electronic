@@ -13,10 +13,5 @@ namespace electronic.Infrastructure.Repositories
             this.cilingirogluDbContext = cilingirogluDbContext;
         }
 
-        public Task<UserApp>? GetUserByRefreshTokenAsync(string refreshToken)
-        {
-            var user = cilingirogluDbContext.UserApp.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
-            return user;
-        }
     }
 }

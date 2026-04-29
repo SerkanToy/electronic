@@ -11,7 +11,7 @@ using System.Text;
 
 namespace electronic.Infrastructure.Processors
 {
-    public class AuthTokenProcessor : IAuthTokenProcessor
+    public class AuthTokenProcessor 
     {
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly JwtOptions jwtOptions;
@@ -30,9 +30,7 @@ namespace electronic.Infrastructure.Processors
             {
                 new Claim("FullName",$"{user.Name} {user.SurName}"),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                new Claim("RefreshToken",user.RefreshToken),
-                new Claim("RefreshTokenExpiresAtUtc",user.RefreshTokenExpiresAtUtc.ToString()),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString())
             };
 
             var expires = DateTime.UtcNow.AddMinutes(jwtOptions.ExpirationTimeInMinutes);

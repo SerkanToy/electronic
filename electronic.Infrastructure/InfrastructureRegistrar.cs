@@ -6,12 +6,15 @@ using electronic.Infrastructure.Context;
 using electronic.Infrastructure.Options;
 using electronic.Infrastructure.Processors;
 using electronic.Infrastructure.Repositories;
+using electronic.Infrastructure.UoW;
 using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace electronic.Infrastructure
 { 
@@ -25,7 +28,7 @@ namespace electronic.Infrastructure
                 opt.UseSqlServer(connectionString);
             });
 
-            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
+            //services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
 
             services.AddIdentityCore<UserApp>(opt =>
             {
@@ -34,11 +37,12 @@ namespace electronic.Infrastructure
                 opt.Password.RequireUppercase = true;
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequiredLength = 4;
-
+                opt.Password.RequireUppercase = true;
                 opt.User.RequireUniqueEmail = true;
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 
             }).AddRoles<RoleApp>()
+            .AddSignInManager<SignInManager<UserApp>>()
             .AddEntityFrameworkStores<CilingirogluDbContext>();
 
             services.AddAuthentication(opt =>
@@ -46,36 +50,27 @@ namespace electronic.Infrastructure
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jwt => { 
-                var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
-                jwt.TokenValidationParameters = new TokenValidationParameters { 
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtOptions.Secret))
-                };
-                jwt.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        var accessToken = context.Request.Cookies["ACCESS_TOKEN"];
-                        if (!string.IsNullOrEmpty(accessToken))
-                        {
-                            context.Token = accessToken;
-                        }
-                        return Task.CompletedTask;
-                    }
+                    ValidIssuer = configuration["JwtOptions:Issuer"],
+                    ValidAudience = configuration["JwtOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(configuration["JwtOptions:Secret"]!))
                 };
             });
 
             services.AddAuthorization();
-            services.AddScoped(typeof(IUnitOfWork), typeof(CilingirogluDbContext));
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(ResponseModel<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IAuthService), typeof(AuthService));
+            services.AddScoped(typeof(ITokenService), typeof(TokenService));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddHttpContextAccessor();
 
