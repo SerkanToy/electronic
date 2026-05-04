@@ -8,5 +8,6 @@ namespace electronik.Domain.Entities.Users
         {
             Id = Guid.CreateVersion7();
         }
+        public ICollection<UserRole>? UserRole { get; set; }
     }
 }

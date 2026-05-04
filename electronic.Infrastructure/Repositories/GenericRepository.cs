@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace electronic.Infrastructure.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, new()
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly CilingirogluDbContext _context;
         private readonly DbSet<TEntity> dbSet;
-        public GenericRepository(CilingirogluDbContext _context, DbSet<TEntity> dbSet)
+        public GenericRepository(CilingirogluDbContext _context)
         {
             this._context = _context;
             this.dbSet = _context.Set<TEntity>();

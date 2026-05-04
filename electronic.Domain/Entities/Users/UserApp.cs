@@ -15,6 +15,7 @@ namespace electronik.Domain.Entities.Users
         public string SurName { get; set; }
         public string Salt { get; set; }
         public ICollection<Address>? Addresses { get; set; }
+        public ICollection<UserRole> UserRole { get; set; }
 
         #region Audit Log
             public DateTimeOffset CreateAt { get; set; }
