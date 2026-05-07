@@ -4,7 +4,10 @@ namespace electronik.Domain.Entities.Users
 {
     public class UserRole : IdentityUserRole<Guid>
     {
-        public UserApp UserApp { get; set; }
-        public RoleApp RoleApp { get; set; }
+        public virtual Guid UserId { get; set; }
+        
+        public virtual UserApp UserApp { get; set; }
+        public virtual Guid RoleId { get; set; }
+        public virtual RoleApp RoleApp { get; set; }
     }
 }

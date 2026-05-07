@@ -1,6 +1,6 @@
 ﻿using electronic.Domain.Entities.Employees;
 
-namespace electronic.Application.Services
+namespace electronic.Application.InterfaceServices
 {
     public interface IProductService
     {

@@ -7,7 +7,7 @@ namespace electronic.Application.Interface
     public interface IGenericRepository<TEntity> where TEntity : class
     {
         Task<IQueryable<TEntity>> GetAllAsync();
-        Task<TEntity> GetAsync(Guid Id);
+        Task<TEntity> GetByIdAsync(Guid Id);
         Task CreateAsync(TEntity entity);
         void Delete(Guid Id);
         void Update(TEntity entity);

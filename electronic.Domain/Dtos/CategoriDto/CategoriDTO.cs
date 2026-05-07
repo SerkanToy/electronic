@@ -1,7 +1,7 @@
 ﻿using electronic.Domain.Entities.Employees;
 using System.Security.AccessControl;
 
-namespace electronic.Domain.Dtos.Categoris
+namespace electronic.Domain.Dtos.CategoriDto
 {
     public class CategoriDTO
     {

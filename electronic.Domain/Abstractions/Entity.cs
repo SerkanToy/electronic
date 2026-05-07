@@ -12,7 +12,7 @@ namespace electronic.Domain.Abstractions
 
         #region Audit Log
         public bool IsActive { get; set; } = true;
-        public DateTimeOffset CreateAt { get; set; }
+        public DateTimeOffset CreateAt { get; set; } = DateTimeOffset.Now;
         public Guid CreateUserId { get; set; } = default!;
         public string CreateUserName => GetCreateUserName();
         public DateTimeOffset? UpdateAt { get; set; }

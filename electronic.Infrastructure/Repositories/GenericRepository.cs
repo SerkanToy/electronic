@@ -25,7 +25,7 @@ namespace electronic.Infrastructure.Repositories
             dbSet.Update(entity);
         } 
 
-        public async Task<TEntity> GetAsync(Guid Id)
+        public async Task<TEntity> GetByIdAsync(Guid Id)
         {
             return (await dbSet.FindAsync(Id))!;
         }
@@ -37,7 +37,17 @@ namespace electronic.Infrastructure.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync();
+            try
+            {
+                return await _context.SaveChangesAsync();
+
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception or handle it as needed
+                //throw new Exception("An error occurred while saving changes to the database.", ex);
+                return 0;
+            }
         }
 
         public void Update(TEntity entity)
