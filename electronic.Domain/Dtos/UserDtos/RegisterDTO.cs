@@ -1,10 +1,16 @@
-﻿namespace electronic.Domain.Dtos.UserDtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace electronic.Domain.Dtos.UserDtos
 {
     public class RegisterDTO
     {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Boş Bırakmayın")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Boş Bırakmayın")]
+        public string Password { get; set; }
+        [Required(ErrorMessage = "Boş Bırakmayın")]
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Boş Bırakmayın")]
+        public string LastName { get; set; }
     }
 }

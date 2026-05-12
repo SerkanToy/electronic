@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-
-namespace electronic.api.Handlers
+ 
+namespace electronic.api.Extensions
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {

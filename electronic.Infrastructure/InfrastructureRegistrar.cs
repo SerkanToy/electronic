@@ -3,7 +3,6 @@ using electronic.Application.Interface;
 using electronic.Domain.Models;
 using electronic.Infrastructure.Concretes;
 using electronic.Infrastructure.Context;
-using electronic.Infrastructure.Options;
 using electronic.Infrastructure.Processors;
 using electronic.Infrastructure.Repositories;
 using electronic.Infrastructure.UoW;
@@ -67,7 +66,7 @@ namespace electronic.Infrastructure
 
             services.AddAuthorization();
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
-            services.AddScoped(typeof(ResponseModel<>));
+            services.AddScoped(typeof(ResponseModel));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IAuthService), typeof(AuthService));
             services.AddScoped(typeof(ITokenService), typeof(TokenService));

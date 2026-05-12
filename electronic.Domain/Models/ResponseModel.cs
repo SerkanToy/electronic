@@ -1,10 +1,18 @@
 ﻿namespace electronic.Domain.Models
 {
-    public class ResponseModel<T>
+    public class ResponseModel
     {
-        public T Data { get; set; }
-        public List<T> DataList { get; set; }
-        public bool IsSuccess { get; set; }
-        public List<string> Message { get; set; }
+        public bool status { get; set; }
+        public string title { get; set; } 
+        public string message { get; set; }
+        public string details { get; set; }
+        public bool isHtmlEnabled { get; set; }
+        public bool displayByDefault { get; set; }
+        public bool showWithToastr { get; set; }
+        public object data { get; set; }
+        public IEnumerable<string> errors { get; set; }
+
+      
+
     }
 }

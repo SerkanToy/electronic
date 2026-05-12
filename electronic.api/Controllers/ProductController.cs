@@ -4,6 +4,7 @@ using electronic.Domain.Entities.Employees;
 using electronic.Domain.Exceptions;
 using electronic.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace electronic.api.Controllers
 {
@@ -21,92 +22,132 @@ namespace electronic.api.Controllers
 
         [HttpGet]
         [ActionName("urun-listesi")]
-        public async Task<ResponseModel<ProductListDto>> GetAll([FromServices] ResponseModel<ProductListDto> responseModel)
+        public async Task<ActionResult<ResponseModel>> GetAll([FromServices] ResponseModel responseModel)
         {
-            var products = await productGenericRepository.GetAllAsync();
-            responseModel.IsSuccess = true;
-            responseModel.DataList = products.Select(v => new ProductListDto
-                                        {
-                                            Id = v.Id,
-                                            Name = v.Name,
-                                            Description = v.Description,
-                                            RegulerPrice = v.RegulerPrice,
-                                            DiscountPrice = v.DiscountPrice,
-                                            Note = v.Note,
-                                            Icon = v.icon
-                                        }).ToList();
-            return responseModel;
+            try
+            {
+                var products = await productGenericRepository.GetAllAsync();
+                responseModel.status = true;
+                responseModel.data = products.Select(v => new ProductListDto
+                {
+                    Id = v.Id,
+                    Name = v.Name,
+                    Description = v.Description,
+                    RegulerPrice = v.RegulerPrice,
+                    DiscountPrice = v.DiscountPrice,
+                    Note = v.Note,
+                    Icon = v.icon
+                }).ToList();
+                return Ok(responseModel);
+            }
+            catch (Exception ex) 
+            {
+                responseModel.status = false;
+                responseModel.message = "İstenmeyen Bir Hata Oluştu.";
+                responseModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(responseModel);
+            }            
         }
 
 
         [HttpGet("{id}")]
         [ActionName("urun-detay")]
-        public async Task<ResponseModel<ProductByIdDto>> GetById([FromServices] ResponseModel<ProductByIdDto> responseModel, string id)
+        public async Task<ActionResult<ResponseModel>> GetById([FromServices] ResponseModel responseModel,[Required(ErrorMessage = "Geçersiz işlem.")] string id)
         {
-            var products = await productGenericRepository.GetByIdAsync(Guid.Parse(id));
-            responseModel.IsSuccess = true;
-            responseModel.Data = new ProductByIdDto
-                                {
-                                    Id = products.Id,
-                                    Name = products.Name,
-                                    Description = products.Description,
-                                    RegulerPrice = products.RegulerPrice,
-                                    DiscountPrice = products.DiscountPrice,
-                                    Note = products.Note,
-                                    Icon = products.icon
-                                };
-            return responseModel;
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    responseModel.status = false;
+                    responseModel.errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    return BadRequest(responseModel);
+                }
+                var products = await productGenericRepository.GetByIdAsync(Guid.Parse(id));
+                responseModel.status = true;
+                responseModel.data = new ProductByIdDto
+                {
+                    Id = products.Id,
+                    Name = products.Name,
+                    Description = products.Description,
+                    RegulerPrice = products.RegulerPrice,
+                    DiscountPrice = products.DiscountPrice,
+                    Note = products.Note,
+                    Icon = products.icon
+                };
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                responseModel.status = false;
+                responseModel.message = "İstenmeyen Bir Hata Oluştu.";
+                responseModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(responseModel);
+            }
+
         }
 
         [HttpPost]
         [ActionName("urun-ekle")]
-        public async Task<ActionResult<ResponseModel<ProductCreateDto>>> Create([FromServices] ResponseModel<ProductCreateDto> responseModel, ProductCreateDto productCreateDto)
+        public async Task<ActionResult<ResponseModel>> Create([FromServices] ResponseModel responseModel, ProductCreateDto productCreateDto)
         {
-            if(!ModelState.IsValid)
+            try
             {
-                responseModel.IsSuccess = false;
-                responseModel.Message = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                responseModel.Data = productCreateDto;
-                return BadRequest(ModelState);
-            }
+                if (!ModelState.IsValid)
+                {
+                    responseModel.status = false;
+                    responseModel.errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    responseModel.data = productCreateDto;
+                    return BadRequest(ModelState);
+                }
 
-            Product product = new Product
-            {
-                Name = productCreateDto.Name,
-                Description = productCreateDto.Description,
-                RegulerPrice = productCreateDto.RegulerPrice,
-                DiscountPrice = productCreateDto.DiscountPrice,
-                Note = productCreateDto.Note,
-                icon = productCreateDto.icon,
-                CreateUserId = Guid.Parse("019df808-de80-7352-8987-fc6f0c56e282")
+                Product product = new Product
+                {
+                    Name = productCreateDto.Name,
+                    Description = productCreateDto.Description,
+                    RegulerPrice = productCreateDto.RegulerPrice,
+                    DiscountPrice = productCreateDto.DiscountPrice,
+                    Note = productCreateDto.Note,
+                    icon = productCreateDto.icon,
+                    CreateUserId = Guid.Parse("019df808-de80-7352-8987-fc6f0c56e282")
 
-            };
-            await productGenericRepository.CreateAsync(product);
+                };
+                await productGenericRepository.CreateAsync(product);
 
-            await productJoinCategori.CreateAsync(new ProductJoinCategori
-            {
-                ProductId = product.Id,
-                //CategoriId = productCreateDto.CategoryId
-            });
+                await productJoinCategori.CreateAsync(new ProductJoinCategori
+                {
+                    ProductId = product.Id,
+                    //CategoriId = productCreateDto.CategoryId
+                });
 
-            var save = await productGenericRepository.SaveChangesAsync();
 
-            if(save != 0)
-            {
-                responseModel.IsSuccess = true;
-                responseModel.Message = new List<string> { ErrorsText.Success };
-                responseModel.Data = productCreateDto;
+
+                var save = await productGenericRepository.SaveChangesAsync();
+
+                if (save != 0)
+                {
+                    responseModel.status = false;
+                    responseModel.errors = new List<string> { ErrorsText.Success };
+                    responseModel.data = productCreateDto;
+                    return Ok(responseModel);
+                }
+
+                responseModel.status = true;
+                responseModel.errors = new List<string> { ErrorsText.SaveError }; //ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 return Ok(responseModel);
-            }
 
-            responseModel.IsSuccess = false;
-            responseModel.Message = new List<string> { ErrorsText.SaveError }; //ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return Ok(responseModel);
+            }
+            catch(Exception ex)
+            {
+                responseModel.status = false;
+                responseModel.message = "İstenmeyen Bir Hata Oluştu.";
+                responseModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(responseModel);
+            }
         }
 
         [HttpPut("{id}")]
         [ActionName("urun-guncelle")]
-        public async Task<ResponseModel<ProductUpdateDto>> UpdateAsync([FromServices] ResponseModel<ProductUpdateDto> responseModel, 
+        public async Task<ResponseModel> UpdateAsync([FromServices] ResponseModel responseModel, 
                                                             ProductUpdateDto productUpdateDto, 
                                                             string id)
         {
@@ -117,32 +158,52 @@ namespace electronic.api.Controllers
 
         [HttpDelete("{id}")]
         [ActionName("urun-sil")]
-        public async Task<ResponseModel<ProductDeleteDto>> DeleteAsync([FromServices] ResponseModel<ProductDeleteDto> responseModel, string id)
+        public async Task<ActionResult<ResponseModel>> DeleteAsync([FromServices] ResponseModel responseModel,[Required(ErrorMessage = "Boş Bırakmayın.")] string id)
         {
-            var products = await productGenericRepository.GetByIdAsync(Guid.Parse(id));
-            products.IsDeleted = true;
-            productGenericRepository.Update(products);
-            var save = await productGenericRepository.SaveChangesAsync();
-
-            if(save == 0)
+            try
             {
-                responseModel.IsSuccess = false;
-                responseModel.Message = new List<string> { ErrorsText.SaveError };
-                responseModel.Data = new ProductDeleteDto
+                if (!ModelState.IsValid)
+                {
+                    responseModel.status = false;
+                    responseModel.errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    return BadRequest(ModelState);
+                }
+
+                var products = await productGenericRepository.GetByIdAsync(Guid.Parse(id));
+                products.IsDeleted = true;
+                productGenericRepository.Update(products);
+                var save = await productGenericRepository.SaveChangesAsync();
+
+                if (save == 0)
+                {
+                    responseModel.status = false;
+                    responseModel.errors = new List<string> { ErrorsText.SaveError };
+                    responseModel.data = new ProductDeleteDto
+                    {
+
+                    };
+                    return responseModel;
+                }
+
+                responseModel.status = true;
+                responseModel.data = new ProductDeleteDto
                 {
 
                 };
-                return responseModel;
+
+                return Ok(responseModel);
+
             }
-
-            responseModel.IsSuccess = true;
-            responseModel.Message = new List<string> { ErrorsText.Success };
-            responseModel.Data = new ProductDeleteDto
+            catch (Exception ex) 
             {
+                responseModel.status = false;
+                responseModel.message = "İstenmeyen Bir Hata Oluştu.";
+                responseModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(responseModel);
+            }
+            
 
-            };
-
-            return responseModel;
+            
         }
     }
 }

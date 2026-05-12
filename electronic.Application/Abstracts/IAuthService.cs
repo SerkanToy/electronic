@@ -6,7 +6,7 @@ namespace electronic.Application.Abstracts
 {
     public interface IAuthService
     {
-        Task<ResponseModel<UserDTO>> Register(RegisterDTO dto);
-        Task<ResponseModel<UserDTO>> Login(LoginDTO dto);
+        Task<ResponseModel> Register(RegisterDTO dto);
+        Task<ResponseModel> Login(LoginDTO dto);
     }
 }
