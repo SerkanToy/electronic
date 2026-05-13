@@ -12,7 +12,8 @@ public class Address : Entity
     }
     public Guid Id { get; set; }
     public string Title { get; set; }
-    public string FulLAddress { get; set; }
+    public string FullAddress { get; set; }
+    public string MailCode { get; set; }
     public Guid CountryId { get; set; }
     public Country Country { get; set; }
     public Guid CityId { get; set; }
