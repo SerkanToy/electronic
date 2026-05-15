@@ -5,6 +5,7 @@ using electronic.Domain.Exceptions;
 using electronic.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace electronic.api.Controllers
 {
@@ -72,7 +73,8 @@ namespace electronic.api.Controllers
                     RegulerPrice = products.RegulerPrice,
                     DiscountPrice = products.DiscountPrice,
                     Note = products.Note,
-                    Icon = products.icon
+                    Icon = products.icon,
+                    
                 };
                 return Ok(responseModel);
             }
@@ -108,7 +110,7 @@ namespace electronic.api.Controllers
                     DiscountPrice = productCreateDto.DiscountPrice,
                     Note = productCreateDto.Note,
                     icon = productCreateDto.icon,
-                    CreateUserId = Guid.Parse("019df808-de80-7352-8987-fc6f0c56e282")
+                    CreateUserId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value)
 
                 };
                 await productGenericRepository.CreateAsync(product);

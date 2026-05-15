@@ -65,10 +65,12 @@ namespace electronic.Infrastructure.Concretes
                 SurName = dto.LastName,
                 Email = dto.Email,
                 UserName = dto.Email.Split('@')[0],
+                Salt = Guid.NewGuid().ToString()
             };
-
+            user.CreateUserId = user.Id;
+            user.Id = user.Id;
             var result = await userManager.CreateAsync(user, dto.Password);
-            if(!result.Succeeded)
+            if(result.Errors.Any() == true)
             {
                 responseModel.status = false;
                 responseModel.message = "İşlem Başarısız.";
@@ -76,7 +78,7 @@ namespace electronic.Infrastructure.Concretes
                 return responseModel;
             }
 
-            await userManager.AddToRoleAsync(user, "NormalUser");
+            IdentityResult ıdentityResult = await userManager.AddToRoleAsync(user, "NormalUser");
             var roles = await userManager.GetRolesAsync(user);
             var userData = new UserDTO
             {
@@ -86,9 +88,9 @@ namespace electronic.Infrastructure.Concretes
                 Token = tokenService.CreateToken(user, roles)
             };
 
-            responseModel.status = false;
-            responseModel.message = "İşlem Başarısız.";
-            responseModel.errors = result.Errors.ToList().Select(v => v.Description);
+            responseModel.status = true;
+            responseModel.message = "İşlem Başarılı.";
+            responseModel.data = dto;
             return responseModel;
         }
     }

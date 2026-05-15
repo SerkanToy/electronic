@@ -4,6 +4,7 @@ using electronic.Domain.Entities.Employees.Address;
 using electronic.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace electronic.api.Controllers
 {
@@ -52,8 +53,10 @@ namespace electronic.api.Controllers
                     return BadRequest(model);
                 }
 
+                Guid CreateUserId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
                 await addressGenericRepository.CreateAsync(
-                    new Address { Title = $"{addressAddDto.Title}", FullAddress = $"{addressAddDto.FullAddress}", MailCode = $"{addressAddDto.MailCode}" }
+                    new Address { Title = $"{addressAddDto.Title}", FullAddress = $"{addressAddDto.FullAddress}", MailCode = $"{addressAddDto.MailCode}", CreateUserId = CreateUserId, UserAppId = CreateUserId }
                 );
                 var result = await addressGenericRepository.SaveChangesAsync();
 

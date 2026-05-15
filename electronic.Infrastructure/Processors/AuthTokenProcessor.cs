@@ -1,5 +1,4 @@
-﻿using electronic.Application.Abstracts;
-using electronic.Infrastructure.Options;
+﻿using electronic.Infrastructure.Options;
 using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;

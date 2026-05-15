@@ -2,14 +2,17 @@
 using electronic.Domain.Dtos.CountryDto;
 using electronic.Domain.Entities.Employees.Address;
 using electronic.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Security.Claims;
 
 namespace electronic.api.Controllers
 {
     [Route("ulke/[action]")]
     [ApiController]
+    [Authorize]
     public class CountryController : ControllerBase
     {
         private readonly IGenericRepository<Country> countryGenericRepository;
@@ -51,7 +54,7 @@ namespace electronic.api.Controllers
                 }
 
                 await countryGenericRepository.CreateAsync(
-                    new Country { Name = $"{countryAddDto.Name}" }
+                    new Country { Name = $"{countryAddDto.Name}", CreateUserId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value) }
                 );
                 var result = await countryGenericRepository.SaveChangesAsync();
 

@@ -1,5 +1,6 @@
 ﻿using electronic.Domain.Entities.Employees.Address;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace electronik.Domain.Entities.Users
 {
@@ -15,7 +16,8 @@ namespace electronik.Domain.Entities.Users
         public string SurName { get; set; }
         public string Salt { get; set; }
         public ICollection<Address>? Addresses { get; set; }
-        public ICollection<UserRole> UserRole { get; set; }
+        [NotMapped]
+        public ICollection<UserRole>? UserRole { get; set; }
 
         #region Audit Log
             public DateTimeOffset CreateAt { get; set; }

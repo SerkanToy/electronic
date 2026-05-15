@@ -18,41 +18,40 @@ namespace electronic.api.Controllers
 
         [HttpPost]
         [ActionName("giris-yap")]
-        public async Task<ActionResult<ResponseModel>> Login([FromServices] ResponseModel responseModel,[FromBody] LoginDTO loginDTO)
+        public async Task<ActionResult<ResponseModel>> Login([FromServices] ResponseModel loginModel, [FromBody] LoginDTO loginDTO)
         {
             try
             {
                 if(!ModelState.IsValid)
                 {
-                    responseModel.status = false;
-                    responseModel.data = loginDTO;
-                    responseModel.errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                    return BadRequest(responseModel);
+                    loginModel.status = false;
+                    loginModel.errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    return BadRequest(loginModel);
                 }
 
                 var result = await authService.Login(loginDTO);
                 if (result.status)
                 {
-                    responseModel.status = true;
-                    responseModel.data = loginDTO;
-                    return Ok(responseModel);
+                    
+                    loginModel = await authService.Login(loginDTO);
+                    return Ok(loginModel);
                 }
 
-                responseModel.status = false;
-                responseModel.errors = new List<string> { "İstenmeyen Bir Hata Oluştu." };
-                return BadRequest(responseModel);
+                loginModel.status = false;
+                loginModel.errors = new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(loginModel);
             }
             catch (Exception ex) 
             {
-                responseModel.status = false;
-                responseModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
-                return BadRequest(responseModel);
+                loginModel.status = false;
+                loginModel.errors = ex.Message != null ? new List<string> { ex.Message } : new List<string> { "İstenmeyen Bir Hata Oluştu." };
+                return BadRequest(loginModel);
             }
         }
 
         [HttpPost]
         [ActionName("kayit-yap")]
-        public async Task<IActionResult> Register([FromServices] ResponseModel responseModel, [FromBody] RegisterDTO registerDTO)
+        public async Task<ActionResult<ResponseModel>> Register([FromServices] ResponseModel responseModel, [FromBody] RegisterDTO registerDTO)
         {
             try
             {

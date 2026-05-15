@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace electronik.Domain.Entities.Users
 {
@@ -8,6 +9,7 @@ namespace electronik.Domain.Entities.Users
         {
             Id = Guid.CreateVersion7();
         }
+        [NotMapped]
         public ICollection<UserRole>? UserRole { get; set; }
     }
 }

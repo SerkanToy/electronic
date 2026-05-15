@@ -2,14 +2,15 @@
 using electronic.Domain.Dtos.CategoriDto;
 using electronic.Domain.Entities.Employees;
 using electronic.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Net;
+using System.Security.Claims;
 
 namespace electronic.api.Controllers
 {
+    [Authorize]
     [Route("kategori/[action]")]
     [ApiController]
     public class CategoriController : ControllerBase
@@ -55,7 +56,7 @@ namespace electronic.api.Controllers
                 }
 
                 await categoriGenericRepository.CreateAsync(
-                    new Categori { Name = $"{addCategoriDTO.Name}", Description = $"{addCategoriDTO.Description}", icon = $"{addCategoriDTO.icon}" }
+                    new Categori { Name = $"{addCategoriDTO.Name}", Description = $"{addCategoriDTO.Description}", icon = $"{addCategoriDTO.icon}", CreateUserId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value) }
                 );
                 var result = await categoriGenericRepository.SaveChangesAsync();
 

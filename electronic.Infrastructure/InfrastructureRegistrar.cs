@@ -42,7 +42,8 @@ namespace electronic.Infrastructure
                 
             }).AddRoles<RoleApp>()
             .AddSignInManager<SignInManager<UserApp>>()
-            .AddEntityFrameworkStores<CilingirogluDbContext>();
+            .AddEntityFrameworkStores<CilingirogluDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddAuthentication(opt =>
             {
