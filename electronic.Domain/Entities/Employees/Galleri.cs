@@ -8,8 +8,10 @@ namespace electronic.Domain.Entities.Employees
         {
             Id = Guid.CreateVersion7();
         }
+        public string Name { get; set; }
         public bool IsMain { get; set; }
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
+        public int Orderby {  get; set; }
     }
 }

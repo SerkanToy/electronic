@@ -1,4 +1,5 @@
-﻿using electronic.Domain.Entities.Employees.Address;
+﻿using electronic.Domain.Entities.Employees;
+using electronic.Domain.Entities.Employees.Address;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,9 +20,10 @@ namespace electronik.Domain.Entities.Users
         public ICollection<Address>? Addresses { get; set; }
         [NotMapped]
         public ICollection<UserRole>? UserRole { get; set; }
+        public ICollection<UserJoinOrder>? UserJoinOrder { get; set; }
 
         #region Audit Log
-            public DateTimeOffset CreateAt { get; set; }
+        public DateTimeOffset CreateAt { get; set; }
             public Guid CreateUserId { get; set; } = default!;
             public DateTimeOffset? UpdateAt { get; set; }
             public Guid? UpdateUserId { get; set; }
