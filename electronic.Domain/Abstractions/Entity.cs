@@ -1,0 +1,72 @@
+﻿using electronik.Domain.Entities.Users;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace electronic.Domain.Abstractions
+{
+    public abstract class Entity
+    {
+        public Guid Id { get; set; }
+
+        #region Audit Log
+        public bool IsActive { get; set; } = true;
+        public DateTimeOffset CreateAt { get; set; } = DateTimeOffset.Now;
+        public Guid CreateUserId { get; set; } = default!;
+        public string CreateUserName => GetCreateUserName();
+        public DateTimeOffset? UpdateAt { get; set; }
+        public Guid? UpdateUserId { get; set; }
+        public string? UpdateUserName => GetUpdateUserName();
+        public bool IsDeleted { get; set; }
+        public DateTimeOffset? DeleteAt { get; set; }
+        [NotMapped]
+        public string? DeleteUserName => GetDeleteUserName();
+        public Guid? DeleteUserId { get; set; }
+
+        
+        private string GetCreateUserName()
+        {
+            HttpContextAccessor httpContextAccessor = new();
+            var userManager = httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetRequiredService<UserManager<UserApp>>();
+
+            UserApp appUser = userManager.Users.First(p => p.Id == CreateUserId);
+
+            return appUser.Name + " " + appUser.SurName + " (" + appUser.Email + ")";
+        }
+
+        private string? GetUpdateUserName()
+        {
+            if (UpdateUserId is null) return null;
+
+            HttpContextAccessor httpContextAccessor = new();
+            var userManager = httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetRequiredService<UserManager<UserApp>>();
+
+            UserApp appUser = userManager.Users.First(p => p.Id == UpdateUserId);
+
+            return appUser.Name + " " + appUser.SurName + " (" + appUser.Email + ")";
+        }
+
+        private string? GetDeleteUserName()
+        {
+            if (UpdateUserId is null) return null;
+
+            HttpContextAccessor httpContextAccessor = new();
+            var userManager = httpContextAccessor
+                .HttpContext
+                .RequestServices
+                .GetRequiredService<UserManager<UserApp>>();
+
+            UserApp appUser = userManager.Users.First(p => p.Id == DeleteUserId);
+
+            return appUser.Name + " " + appUser.SurName + " (" + appUser.Email + ")";
+        }
+        #endregion
+    }
+}
