@@ -1,6 +1,6 @@
 ﻿using electronic.Domain.Abstractions;
 
-namespace electronic.Domain.Entities.Employees.Address
+namespace electronic.Domain.Entities.Employees.Addresses
 {
     public class Town : Entity
     {
@@ -10,7 +10,7 @@ namespace electronic.Domain.Entities.Employees.Address
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Address> Address { get; set; }
+        public ICollection<Addresses> Address { get; set; }
         public Guid CityId { get; set; }
         public City City { get; set; }
     }

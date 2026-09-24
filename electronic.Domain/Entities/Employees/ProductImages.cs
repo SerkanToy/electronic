@@ -1,17 +1,18 @@
 ﻿using electronic.Domain.Abstractions;
+using electronic.Domain.Entities.Employees.Product;
 
 namespace electronic.Domain.Entities.Employees
 {
-    public class Galleri:Entity
+    public class ProductImages:Entity
     {
-        public Galleri()
+        public ProductImages()
         {
             Id = Guid.CreateVersion7();
         }
         public string Name { get; set; }
         public bool IsMain { get; set; }
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Products Product { get; set; }
         public int Orderby {  get; set; }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using electronic.Domain.Abstractions;
 using electronik.Domain.Entities.Users;
 
-namespace electronic.Domain.Entities.Employees.Address;
+namespace electronic.Domain.Entities.Employees.Addresses;
 
 
-public class Address : Entity
+public class Addresses : Entity
 {
-    public Address()
+    public Addresses()
     {
         Id = Guid.CreateVersion7();
     }

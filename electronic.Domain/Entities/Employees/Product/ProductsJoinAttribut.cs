@@ -3,16 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace electronic.Domain.Entities.Employees
+namespace electronic.Domain.Entities.Employees.Product
 {
-    public class ProductJoinAttribut : Entity
+    public class ProductsJoinAttribut : Entity
     {
-        public ProductJoinAttribut()
+        public ProductsJoinAttribut()
         {
             Id = Guid.CreateVersion7();
         }
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Products Product { get; set; }
         public Guid AttributId { get; set; }
         public Attribut Attribut { get; set; }
     }

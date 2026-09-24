@@ -1,5 +1,5 @@
 ﻿using electronic.Domain.Entities.Employees;
-using electronic.Domain.Entities.Employees.Address;
+using electronic.Domain.Entities.Employees.Addresses;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +17,7 @@ namespace electronik.Domain.Entities.Users
         public string Name { get; set; }
         public string SurName { get; set; }
         public string Salt { get; set; }
-        public ICollection<Address>? Addresses { get; set; }
+        public ICollection<Addresses>? Addresses { get; set; }
         [NotMapped]
         public ICollection<UserRole>? UserRole { get; set; }
         public ICollection<UserJoinOrder>? UserJoinOrder { get; set; }

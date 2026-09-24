@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace electronic.Domain.Entities.Employees
+namespace electronic.Domain.Entities.Employees.Product
 {
     public class ProductsJoinTags
     {
@@ -14,6 +14,6 @@ namespace electronic.Domain.Entities.Employees
         public Guid TagId { get; set; }
         public Tags Tags { get; set; }
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Products Product { get; set; }
     }
 }

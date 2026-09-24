@@ -1,4 +1,4 @@
-﻿namespace electronic.Domain.Entities.Employees
+﻿namespace electronic.Domain.Entities.Employees.Basket
 {
     public class BasketItems
     {

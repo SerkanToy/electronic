@@ -1,4 +1,5 @@
 ﻿using electronic.Domain.Abstractions;
+using electronic.Domain.Entities.Employees.Product;
 
 namespace electronic.Domain.Entities.Employees
 {
