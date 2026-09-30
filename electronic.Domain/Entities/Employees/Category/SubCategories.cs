@@ -1,4 +1,5 @@
 ﻿using electronic.Domain.Abstractions;
+using electronic.Domain.Entities.Employees.Product;
 
 namespace electronic.Domain.Entities.Employees.Category
 {
@@ -11,6 +12,8 @@ namespace electronic.Domain.Entities.Employees.Category
 
         public Categories Categories { get; set; }
         public Guid CategoriesId { get; set; }
+        public ICollection<Products> Products { get; set; }
+
 
     }
 }

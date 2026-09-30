@@ -8,7 +8,12 @@
 
   <ItemGroup>
     <Folder Include="DTOs\" />
+    <Folder Include="Interfaces\NewFolder\" />
     <Folder Include="Service\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
   </ItemGroup>
 
 </Project>
