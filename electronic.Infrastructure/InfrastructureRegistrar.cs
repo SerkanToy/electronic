@@ -1,7 +1,9 @@
 ﻿using electronic.Application.Interfaces;
+using electronic.Application.UoW;
 using electronic.Infrastructure.Context;
 using electronic.Infrastructure.Models;
 using electronic.Infrastructure.Repositories;
+using electronic.Infrastructure.UoW;
 using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +39,7 @@ namespace electronic.Infrastructure
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(ResponseModel));
-
+            services.AddTransient(typeof(IUnitOfWork),typeof(UnitOfWork));
             services.AddHttpContextAccessor();
             return services;
         }
