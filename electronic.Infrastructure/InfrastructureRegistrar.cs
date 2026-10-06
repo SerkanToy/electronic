@@ -1,10 +1,13 @@
 ﻿using electronic.Application.Interfaces;
+using electronic.Application.IService;
 using electronic.Application.UoW;
 using electronic.Infrastructure.Context;
 using electronic.Infrastructure.Models;
 using electronic.Infrastructure.Repositories;
+using electronic.Infrastructure.Service;
 using electronic.Infrastructure.UoW;
 using electronik.Domain.Entities.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,9 +40,20 @@ namespace electronic.Infrastructure
             .AddEntityFrameworkStores<CilingirogluDbContext>()
             .AddDefaultTokenProviders();
 
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddBearerToken().AddCookie();
+
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(ResponseModel));
+            services.AddScoped(typeof(ResponseModel<>));
             services.AddTransient(typeof(IUnitOfWork),typeof(UnitOfWork));
+            services.AddTransient(typeof(IAuthService),typeof(AuthService));
+            services.AddTransient(typeof(ITokenService),typeof(TokenService));
             services.AddHttpContextAccessor();
             return services;
         }

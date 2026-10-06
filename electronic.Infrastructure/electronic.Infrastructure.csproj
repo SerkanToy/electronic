@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Service\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\electronic.Application\electronic.Application.csproj" />
     <ProjectReference Include="..\electronic.Domain\electronic.Domain.csproj" />
   </ItemGroup>
