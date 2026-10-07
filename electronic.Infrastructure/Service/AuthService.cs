@@ -27,8 +27,8 @@ namespace electronic.Infrastructure.Service
 
         public async Task<ResponseModel> Login(LoginDto dto)
         {
-            var user = await userManager.FindByEmailAsync(dto.Email);
-            if(user == null)
+            (var user, bool userExists) = await findUser(dto.Email);
+            if (!userExists)
             {
                 responseModel.Data = dto;
                 responseModel.IsSuccess = false;
@@ -52,18 +52,55 @@ namespace electronic.Infrastructure.Service
             responseModel.Data = new UserDTO
             {
                 Id = user.Id.ToString(),
-                UserName = user.UserName,
                 Email = user.Email,
-                Roles = roles.ToList(),
                 Token = tokenService.CreateToken(user, roles.ToList())
             };
 
             return responseModel;
         }
 
-        public async Task<ResponseModel> Register(RegisterDTO dto)
+        public async Task<ResponseModel> Register(UserApp user, string passwordHash)
         {
+            //var user = await userManager.FindByEmailAsync(dto.Email);
+            (UserApp userData, bool userExists) = await findUser(user.Email);
+            if(userExists)
+            {
+                responseModel.Data = user;
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { "Kullanıcı zaten mevcut" };
+                return responseModel;
+            }
+
+            var result = await userManager.CreateAsync(user, passwordHash);
+
+            if(!result.Succeeded)
+            {
+                responseModel.Data = user;
+                responseModel.IsSuccess = false;
+                responseModel.Message = result.Errors.Select(e => e.Description).ToList();
+                return responseModel;
+            }
+
+            await userManager.AddToRoleAsync(user, "NormalUser");
+            var roles = await userManager.GetRolesAsync(user);
+            responseModel.IsSuccess = true;
+            responseModel.Message = new List<string> { "Kayıt işlemi başarılı" };
+            responseModel.Data = new RegisterDTO
+            {
+                FirstName = user.Name,
+                LastName = user.SurName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+            };
+
             return responseModel;
+        }
+
+        private async Task<(UserApp, bool)> findUser(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            bool userExists = user != null ? true : false;
+            return await Task.FromResult((user, userExists));
         }
     }
 }

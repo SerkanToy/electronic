@@ -1,6 +1,7 @@
 ﻿using electronic.Domain.DTOs.AuthDTOs;
 using electronic.Infrastructure.Models;
 using electronik.Domain.Entities.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace electronic.api.Controllers
@@ -19,36 +20,68 @@ namespace electronic.api.Controllers
             return await Task.FromResult(responseModel);
         }
 
+        [HttpPost]
+        [ActionName("login")]
+        public async Task<ActionResult<ResponseModel>> Login([FromServices] ResponseModel responseModel, [FromBody] LoginDto dto)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    responseModel.Data = dto;
+                    responseModel.IsSuccess = false;
+                    responseModel.Message = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    return Ok(responseModel);
+                }
+
+                return Ok(await authService.Login(dto));
+            }
+            catch (Exception ex) 
+            {
+                responseModel.Data = dto;
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { ex.Message };
+                return BadRequest(responseModel);
+            }
+        }
 
         [HttpPost]
         [ActionName("register-user")]
-        public async Task<ActionResult<ResponseModel<RegisterDTO>>> CreateUser([FromBody] RegisterDTO newUser, [FromServices] ResponseModel<RegisterDTO> responseModel)
+        public async Task<ActionResult<ResponseModel>> CreateUser([FromBody] RegisterDTO newUser, [FromServices] ResponseModel responseModel)
         {
-            var user = new UserApp
+            try
             {
-                Email = newUser.Email,
-                Name = newUser.FirstName,
-                SurName = newUser.LastName,
-                PhoneNumber = newUser.PhoneNumber,
-                UserName = newUser.Email,
-                Salt = Guid.NewGuid().ToString(), // Example salt generation, should be handled securely
-            };
-            user.CreateUserId = user.Id;
-            user.Id = user.Id;
-            var result = await userManager.CreateAsync(user, newUser.Password); // Example password, should be handled securely
-            if (result.Succeeded)
+
+                if (!ModelState.IsValid)
+                {
+                    responseModel.Data = newUser;
+                    responseModel.IsSuccess = false;
+                    responseModel.Message = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                    return Ok(responseModel);
+                }
+
+                var userApp = new UserApp
+                {
+                    Email = newUser.Email,
+                    Name = newUser.FirstName,
+                    SurName = newUser.LastName,
+                    PhoneNumber = newUser.PhoneNumber,
+                    UserName = newUser.Email,
+                    Salt = Guid.NewGuid().ToString(), // Example salt generation, should be handled securely
+                };
+                userApp.CreateUserId = userApp.Id;
+
+
+                return Ok(await authService.Register(user: userApp, passwordHash: newUser.Password));
+            }
+            catch (Exception ex) 
             {
                 responseModel.Data = newUser;
-                responseModel.IsSuccess = true;
-                responseModel.Message = new List<string> { "User created successfully." };
-                return Ok(responseModel);
-            }
-            else
-            {
                 responseModel.IsSuccess = false;
-                responseModel.Message = result.Errors.Select(e => e.Description).ToList();
+                responseModel.Message = new List<string> { ex.Message };
                 return BadRequest(responseModel);
             }
+            
         }
     }
 }

@@ -6,7 +6,7 @@ namespace electronic.Infrastructure.Service
     {
         public string CreateToken(object user, List<string> roles)
         {
-            throw new NotImplementedException();
+            return "token";
         }
     }
 }
