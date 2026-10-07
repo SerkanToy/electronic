@@ -1,7 +1,9 @@
-﻿namespace electronic.Application.IService
+﻿using electronik.Domain.Entities.Users;
+
+namespace electronic.Application.IService
 {
     public interface ITokenService
     {
-        string CreateToken(object user, List<string> roles);
+        string CreateToken(UserApp user, List<string> roles);
     }
 }
