@@ -1,10 +1,11 @@
-﻿using electronic.Domain.Entities.Employees.Addresses;
+﻿using electronic.api.Areas.Api.Controllers;
+using electronic.Domain.Entities.Employees.Addresses;
 using electronic.Infrastructure.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace electronic.api.Controllers
+namespace electronic.api.Areas.Address.Controllers
 {
+    [Area("address")]
     [Route("address/[action]")]
     [ApiController]
     public class AddressController : ApiBaseController

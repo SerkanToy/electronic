@@ -5,7 +5,7 @@ using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace electronic.api.Controllers
+namespace electronic.api.Areas.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]

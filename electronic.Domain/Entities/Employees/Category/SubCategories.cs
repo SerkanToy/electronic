@@ -9,11 +9,9 @@ namespace electronic.Domain.Entities.Employees.Category
         {
             Id = Guid.CreateVersion7();
         }
-
-        public Categories Categories { get; set; }
-        public Guid CategoriesId { get; set; }
+        public string Name { get; set; }
+        public Categories? Categories { get; set; }
+        public Guid? CategoriesId { get; set; }
         public ICollection<Products> Products { get; set; }
-
-
     }
 }

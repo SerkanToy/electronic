@@ -1,22 +1,25 @@
-﻿using electronic.Domain.DTOs.AuthDTOs;
+﻿using electronic.api.Areas.Api.Controllers;
+using electronic.Domain.DTOs.AuthDTOs;
 using electronic.Infrastructure.Models;
 using electronik.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace electronic.api.Controllers
+namespace electronic.api.Areas.Auth.Controllers
 {
+    [Area("auth")]
     [Route("auth/[action]")]
     [ApiController]
     public class AuthController : ApiBaseController
     {
         [HttpGet]
         [ActionName("users")]
-        public async Task<ActionResult<ResponseModel<IEnumerable<UserApp>>>> Get([FromServices] ResponseModel<IEnumerable<UserApp>> responseModel)
+        //[Authorize]
+        public async Task<ResponseModel<IEnumerable<UserApp>>> Get([FromServices] ResponseModel<IEnumerable<UserApp>> responseModel)
         {
             responseModel.Data = userManager.Users.ToList();
             responseModel.IsSuccess = true;
-            responseModel.Message = new List<string> { "Users retrieved successfully." };
+            responseModel.Message = new List<string> { "Kullanıcı Listesi" };
             return await Task.FromResult(responseModel);
         }
 

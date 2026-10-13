@@ -53,6 +53,7 @@ namespace electronic.Infrastructure.Service
             {
                 Id = user.Id.ToString(),
                 Email = user.Email,
+                FullName = $"{user.Name} {user.SurName}",
                 Token = tokenService.CreateToken(user, roles.ToList())
             };
 
