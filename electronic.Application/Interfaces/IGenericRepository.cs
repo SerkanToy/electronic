@@ -11,6 +11,7 @@ namespace electronic.Application.Interfaces
         Task<IEnumerable<T>> GetAllAsyncWithInclude(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression, bool asNoTracking = true);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = true);
         Task AddAsync(T entity);
+        Task AddAsync(List<T> entity);
         Task Update(T entity);
     }
 }

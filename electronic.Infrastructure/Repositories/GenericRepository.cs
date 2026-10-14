@@ -20,6 +20,11 @@ namespace electronic.Infrastructure.Repositories
             await dbSet.AddAsync(entity);
         }
 
+        public async Task AddAsync(List<T> entity)
+        {
+            await dbSet.AddRangeAsync(entity);
+        }
+
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = true)
         {
             var query = dbSet.Where(predicate);

@@ -11,6 +11,7 @@ namespace electronic.api.Areas.Client.Controllers
     public class CategoriesController : ApiBaseController
     {
         [HttpGet]
+        [ActionName("category-section")]
         public async Task<ActionResult<CategoryDto>> SectionGet()
         {
             var categoryDto =  await unitOfWork.GetRepository<Categories>().GetAllAsync(asNoTracking:false);
