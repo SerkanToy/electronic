@@ -55,7 +55,7 @@ namespace electronic.Domain.Abstractions
 
         private string? GetDeleteUserName()
         {
-            if (UpdateUserId is null) return null;
+            if (DeleteUserId is null) return null;
 
             HttpContextAccessor httpContextAccessor = new();
             var userManager = httpContextAccessor

@@ -1,11 +1,11 @@
 ﻿using electronic.api.Areas.Api.Controllers;
 using electronic.api.Models;
-using electronic.Domain.DTOs.AuthDTOs;
 using electronic.Domain.DTOs.CategoryDTOs;
 using electronic.Domain.Entities.Employees.Category;
 using electronic.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace electronic.api.Areas.Admin.Controllers
 {
@@ -91,6 +91,14 @@ namespace electronic.api.Areas.Admin.Controllers
         {
             try
             {
+                if(!ModelState.IsValid)
+                {
+                    responseModel.Data = newCategory;
+                    responseModel.IsSuccess = false;
+                    responseModel.Message = ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage).ToList();
+                    return BadRequest(responseModel);
+                }
+
                 var isCategory = await unitOfWork.GetRepository<Categories>().FindAsync(x => x.Name.ToLower() == newCategory.Name.ToLower(), asNoTracking:false);
                 if (isCategory.Count() == 0)
                 {
@@ -134,7 +142,7 @@ namespace electronic.api.Areas.Admin.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id?}")]
         [ActionName("category-detail")]
         public async Task<ActionResult<ResponseModel<AdminCategoryDetailDto>>> CategoryDetail([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
         {
@@ -144,8 +152,8 @@ namespace electronic.api.Areas.Admin.Controllers
                 {
                     responseModel.Data = null;
                     responseModel.IsSuccess = false;
-                    responseModel.Message = new List<string> { "İşlemi Başarısız" };
-                    return NotFound(responseModel);
+                    responseModel.Message = ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage).ToList();
+                    return BadRequest(responseModel);
                 }
 
                 var category = await unitOfWork.GetRepository<Categories>().GetByIdAsync(x => x.Id == Guid.Parse(id), asNoTracking: false);
@@ -189,6 +197,156 @@ namespace electronic.api.Areas.Admin.Controllers
                 return BadRequest(responseModel);
             }
         }
+
+        [HttpPut("{id?}")]
+        [ActionName("category-update")]
+        public async Task<ActionResult<ResponseModel<AdminCategoryUpdateDto>>> CategoryUpdate([FromServices] ResponseModel responseModel, [FromBody] AdminCategoryUpdateDto dto, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    responseModel.Data = dto;
+                    responseModel.IsSuccess = false;
+                    responseModel.Message = ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage).ToList(); 
+                    return BadRequest(responseModel);
+                }
+
+                var isCategory = await unitOfWork.GetRepository<Categories>().GetByIdAsync(x => x.Id == Guid.Parse(id), asNoTracking: false);
+                if (isCategory is not null)
+                {
+
+                    if(isCategory.Id != Guid.Parse(id))
+                    {
+                        responseModel.Data = dto;
+                        responseModel.IsSuccess = false;
+                        responseModel.Message = new List<string> { "İşlem Yapılamıyor." };
+                        return BadRequest(responseModel);
+                    }
+
+
+                    isCategory.Name = dto.Name.CustomToTitleCase();
+                    isCategory.Description = dto.Description;
+                    isCategory.icon = dto.icon is null ? isCategory.icon:dto.icon;
+                    isCategory.UpdateUserId = Guid.Parse("ff4dbf3c-ce20-4e35-befd-1f1d89bd56d5");
+                    isCategory.UpdateAt = DateTime.UtcNow;
+                    isCategory.IsActive = dto.IsActive;
+
+                    
+
+                    await unitOfWork.GetRepository<Categories>().Update(isCategory);
+
+                    var result = await unitOfWork.SaveChangesAsync();
+
+                    if (result > 0)
+                    {
+                        responseModel.Data = dto;
+                        responseModel.IsSuccess = true;
+                        responseModel.Message = new List<string> { "Kayıt İşlemi Başarılı" };
+
+                        return Ok(responseModel);
+                    }
+                }
+
+                responseModel.Data = dto;
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { "Güncelleme İşlemi Başarısız", "Sistem Yöneticisi İle İletişime Geçin" };
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                responseModel.Data = dto;
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { ex.Message };
+                foreach (var item in ex.Data)
+                {
+                    responseModel.Message.Add(item.ToString());
+                }
+                return BadRequest(responseModel);
+            }
+        }
+
+        [HttpDelete("{id?}")]
+        [ActionName("category-delete")]
+        public async Task<ActionResult<ResponseModel<AdminCategoryUpdateDto>>> CategoryDelete([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    responseModel.Data = null;
+                    responseModel.IsSuccess = false;
+                    responseModel.Message = ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage).ToList();
+                    return BadRequest(responseModel);
+                }
+
+                var isCategory = await unitOfWork.GetRepository<Categories>().GetByIdAsync(x => x.Id == Guid.Parse(id), asNoTracking: false);
+                if (isCategory is not null)
+                {
+
+                    if (isCategory.Id != Guid.Parse(id))
+                    {
+                        responseModel.Data = new AdminCategoryDeleteDto { 
+                            Name = isCategory.Name.CustomToTitleCase(),
+                            Description = isCategory.Description,
+                            IsDelete = isCategory.IsDeleted,
+                            IsActive = isCategory.IsActive,
+                        };
+                        responseModel.IsSuccess = false;
+                        responseModel.Message = new List<string> { "İşlem Yapılamıyor." };
+                        return BadRequest(responseModel);
+                    }
+
+                    isCategory.DeleteUserId = Guid.Parse("ff4dbf3c-ce20-4e35-befd-1f1d89bd56d5");
+                    isCategory.DeleteAt = DateTime.UtcNow;
+                    isCategory.IsDeleted = !isCategory.IsDeleted;
+                    isCategory.IsActive = !isCategory.IsActive;
+
+
+                    await unitOfWork.GetRepository<Categories>().Update(isCategory);
+
+                    var result = await unitOfWork.SaveChangesAsync();
+
+                    if (result > 0)
+                    {
+                        responseModel.Data = new AdminCategoryDeleteDto
+                        {
+                            Name = isCategory.Name.CustomToTitleCase(),
+                            Description = isCategory.Description,
+                            IsDelete = isCategory.IsDeleted
+                        }; 
+                        responseModel.IsSuccess = true;
+                        responseModel.Message = new List<string> { "Kayıt İşlemi Başarılı" };
+
+                        return Ok(responseModel);
+                    }
+                }
+
+                responseModel.Data = new AdminCategoryDeleteDto
+                {
+                    Name = isCategory.Name.CustomToTitleCase(),
+                    Description = isCategory.Description,
+                    IsDelete = isCategory.IsDeleted
+                }; 
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { "Güncelleme İşlemi Başarısız", "Sistem Yöneticisi İle İletişime Geçin" };
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                responseModel.Data = null;
+                responseModel.IsSuccess = false;
+                responseModel.Message = new List<string> { ex.Message };
+                foreach (var item in ex.Data)
+                {
+                    responseModel.Message.Add(item.ToString());
+                }
+                return BadRequest(responseModel);
+            }
+        }
+
 
     }
 }
