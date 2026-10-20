@@ -7,6 +7,7 @@ using electronic.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace electronic.api.Areas.Admin.Controllers
 {
@@ -46,7 +47,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
         [HttpGet]
         [ActionName("category-list")]
-        public async Task<ActionResult<ResponseModel<AdminCategoryAllDto>>> CategoryList([FromServices] ResponseModel responseModel)
+        public async Task<ActionResult<ResponseModel<AdminCategoryAllDto>>> List([FromServices] ResponseModel responseModel)
         {
             try
             {
@@ -89,7 +90,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
         [HttpPost]
         [ActionName("category-add")]
-        public async Task<ActionResult<ResponseModel<AdminCategoryAddDto>>> CategoryAdd([FromServices] ResponseModel responseModel, [FromBody] AdminCategoryAddDto newCategory)
+        public async Task<ActionResult<ResponseModel<AdminCategoryAddDto>>> Add([FromServices] ResponseModel responseModel, [FromBody] AdminCategoryAddDto newCategory)
         {
             try
             {
@@ -109,7 +110,7 @@ namespace electronic.api.Areas.Admin.Controllers
                         Name = newCategory.Name.CustomToTitleCase(),
                         Description = newCategory.Description,
                         icon = newCategory.icon,
-                        CreateUserId = Guid.Parse("ff4dbf3c-ce20-4e35-befd-1f1d89bd56d5")
+                        CreateUserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
                     });
 
                     var result = await unitOfWork.SaveChangesAsync();
@@ -146,7 +147,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
         [HttpGet("{id?}")]
         [ActionName("category-detail")]
-        public async Task<ActionResult<ResponseModel<AdminCategoryDetailDto>>> CategoryDetail([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
+        public async Task<ActionResult<ResponseModel<AdminCategoryDetailDto>>> Detail([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
         {
             try
             {
@@ -202,7 +203,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
         [HttpPut("{id?}")]
         [ActionName("category-update")]
-        public async Task<ActionResult<ResponseModel<AdminCategoryUpdateDto>>> CategoryUpdate([FromServices] ResponseModel responseModel, [FromBody] AdminCategoryUpdateDto dto, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
+        public async Task<ActionResult<ResponseModel<AdminCategoryUpdateDto>>> Update([FromServices] ResponseModel responseModel, [FromBody] AdminCategoryUpdateDto dto, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
         {
             try
             {
@@ -230,7 +231,7 @@ namespace electronic.api.Areas.Admin.Controllers
                     isCategory.Name = dto.Name.CustomToTitleCase();
                     isCategory.Description = dto.Description;
                     isCategory.icon = dto.icon is null ? isCategory.icon:dto.icon;
-                    isCategory.UpdateUserId = Guid.Parse("ff4dbf3c-ce20-4e35-befd-1f1d89bd56d5");
+                    isCategory.UpdateUserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
                     isCategory.UpdateAt = DateTime.UtcNow;
                     isCategory.IsActive = dto.IsActive;
 
@@ -271,7 +272,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
         [HttpDelete("{id?}")]
         [ActionName("category-delete")]
-        public async Task<ActionResult<ResponseModel<AdminCategoryUpdateDto>>> CategoryDelete([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
+        public async Task<ActionResult<ResponseModel<AdminCategoryDeleteDto>>> Delete([FromServices] ResponseModel responseModel, [Required(ErrorMessage = "Parametre Boş Olamaz")] string id)
         {
             try
             {
@@ -300,7 +301,7 @@ namespace electronic.api.Areas.Admin.Controllers
                         return BadRequest(responseModel);
                     }
 
-                    isCategory.DeleteUserId = Guid.Parse("ff4dbf3c-ce20-4e35-befd-1f1d89bd56d5");
+                    isCategory.DeleteUserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
                     isCategory.DeleteAt = DateTime.UtcNow;
                     isCategory.IsDeleted = !isCategory.IsDeleted;
                     isCategory.IsActive = !isCategory.IsActive;
