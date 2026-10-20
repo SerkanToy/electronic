@@ -25,7 +25,7 @@ namespace electronic.Infrastructure.Repositories
             await dbSet.AddRangeAsync(entity);
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = true)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate = null, bool asNoTracking = true)
         {
             var query = dbSet.Where(predicate);
             if (asNoTracking)
@@ -41,7 +41,7 @@ namespace electronic.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsyncWithInclude(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression, bool asNoTracking = true)
+        public async Task<IEnumerable<T>> GetAllAsyncWithInclude(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression = null, bool asNoTracking = true)
         {
             IQueryable<T> query = dbSet;
             if (asNoTracking)
@@ -59,7 +59,7 @@ namespace electronic.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = true)
+        public async Task<T?> GetByIdAsync(Expression<Func<T, bool>> predicate = null, bool asNoTracking = true)
         {
             var query = dbSet.AsQueryable();
             if (asNoTracking)
@@ -69,7 +69,7 @@ namespace electronic.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<T?> GetByIdAsyncExpressionWithInclude(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression, bool asNoTracking = true)
+        public async Task<T?> GetByIdAsyncExpressionWithInclude(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression = null, bool asNoTracking = true)
         {
             var query = dbSet.Where(predicate);
             if (asNoTracking)

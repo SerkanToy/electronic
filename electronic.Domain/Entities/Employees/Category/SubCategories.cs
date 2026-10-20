@@ -12,6 +12,6 @@ namespace electronic.Domain.Entities.Employees.Category
         public string Name { get; set; }
         public Categories? Categories { get; set; }
         public Guid? CategoriesId { get; set; }
-        public ICollection<Products> Products { get; set; }
+        public ICollection<Products>? Products { get; set; }
     }
 }

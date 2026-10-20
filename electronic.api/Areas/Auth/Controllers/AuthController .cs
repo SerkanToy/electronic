@@ -14,7 +14,7 @@ namespace electronic.api.Areas.Auth.Controllers
     {
         [HttpGet]
         [ActionName("users")]
-        //[Authorize]
+        [Authorize]
         public async Task<ResponseModel<IEnumerable<UserApp>>> Get([FromServices] ResponseModel<IEnumerable<UserApp>> responseModel)
         {
             responseModel.Data = userManager.Users.ToList();

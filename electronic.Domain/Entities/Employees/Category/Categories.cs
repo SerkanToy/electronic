@@ -12,7 +12,7 @@ namespace electronic.Domain.Entities.Employees.Category
         public string Name { get; set; }
         public string Description { get; set; }
         public string? icon { get; set; }
-        public ICollection<Products> Products { get; set; }
-        public ICollection<SubCategories> SubCategories { get; set; } 
+        public ICollection<Products>? Products { get; set; }
+        public ICollection<SubCategories>? SubCategories { get; set; } 
     }
 }

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace electronic.Infrastructure
 {
@@ -45,8 +47,38 @@ namespace electronic.Infrastructure
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["JwtOptions:Issuer"],
+                        ValidAudience = configuration["JwtOptions:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["JwtOptions:Secret"]!)),
+                        ClockSkew = TimeSpan.Zero
+                    };
 
-            }).AddBearerToken().AddCookie();
+            }).AddCookie();
+
+            services.AddCors(options => {
+                options.AddPolicy("electronic.api.clientapp", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+
+                });
+                options.AddPolicy("electronic.api.dashboard", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+
+                });
+            });
+
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(ResponseModel));

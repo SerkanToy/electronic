@@ -1,14 +1,16 @@
 ﻿using electronic.api.Areas.Api.Controllers;
 using electronic.api.Models;
 using electronic.Domain.DTOs.CategoryDTOs;
+using electronic.Domain.DTOs.Products;
 using electronic.Domain.Entities.Employees.Category;
 using electronic.Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace electronic.api.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     [Route("[area]/[controller]/[action]")]
     [ApiController]
@@ -27,7 +29,7 @@ namespace electronic.api.Areas.Admin.Controllers
                     Name = v.Name,
                     Description = v.Description,
                     icon = v.icon,
-                    Products = v.Products,
+                    Products = v.Products.Select(x => new ProductsDto { Id = x.Id.ToString(), Name = x.Name }),
                     SubCategories = v.SubCategories,
                 });
                 return Ok(categoryDto);
