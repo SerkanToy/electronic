@@ -1,8 +1,6 @@
 ﻿using electronic.api.Areas.Api.Controllers;
 using electronic.api.Models;
-using electronic.Domain.DTOs.CategoryDTOs;
 using electronic.Domain.DTOs.Products;
-using electronic.Domain.Entities.Employees.Category;
 using electronic.Domain.Entities.Employees.Product;
 using electronic.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -274,7 +272,7 @@ namespace electronic.api.Areas.Admin.Controllers
                         return BadRequest(responseModel);
                     }
 
-                    isProduct.DeleteUserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    isProduct.DeleteUserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
                     isProduct.DeleteAt = DateTime.UtcNow;
                     isProduct.IsDeleted = !isProduct.IsDeleted;
                     isProduct.IsActive = !isProduct.IsActive;
@@ -286,7 +284,7 @@ namespace electronic.api.Areas.Admin.Controllers
 
                     if (result > 0)
                     {
-                        responseModel.Data = new AdminCategoryDeleteDto
+                        responseModel.Data = new AdminProductDeleteDto
                         {
                             Name = isProduct.Name.CustomToTitleCase(),
                             Description = isProduct.Description,
@@ -299,11 +297,12 @@ namespace electronic.api.Areas.Admin.Controllers
                     }
                 }
 
-                responseModel.Data = new AdminCategoryDeleteDto
+                responseModel.Data = new AdminProductDeleteDto
                 {
                     Name = isProduct.Name.CustomToTitleCase(),
                     Description = isProduct.Description,
-                    IsDelete = isProduct.IsDeleted
+                    IsDelete = isProduct.IsDeleted,
+                    IsActive = isProduct.IsActive
                 };
                 responseModel.IsSuccess = false;
                 responseModel.Message = new List<string> { "Güncelleme İşlemi Başarısız", "Sistem Yöneticisi İle İletişime Geçin" };
