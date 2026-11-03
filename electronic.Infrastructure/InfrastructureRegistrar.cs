@@ -86,6 +86,7 @@ namespace electronic.Infrastructure
             services.AddTransient(typeof(IUnitOfWork),typeof(UnitOfWork));
             services.AddTransient(typeof(IAuthService),typeof(AuthService));
             services.AddTransient(typeof(ITokenService),typeof(TokenService));
+            services.AddTransient(typeof(IPhotographUpload),typeof(PhotographUpload));
             services.AddHttpContextAccessor();
             return services;
         }
