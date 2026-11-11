@@ -8,9 +8,8 @@ namespace electronic.Domain.Entities.Employees.Addresses
         {
             Id = Guid.CreateVersion7();
         }
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<City> City { get; set; }
-        public ICollection<Addresses> Address { get; set; }
+        public ICollection<City>? City { get; set; }
+        public ICollection<Addresses>? Address { get; set; }
     }
 }

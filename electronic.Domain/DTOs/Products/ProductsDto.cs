@@ -9,5 +9,6 @@ namespace electronic.Domain.DTOs.Products
         public string Name { get; set; }
         public string categoryName {  get; set; }
         public string subCategoryName {  get; set; }
+        public IEnumerable<string>? ImagePath {  get; set; }
     }
 }

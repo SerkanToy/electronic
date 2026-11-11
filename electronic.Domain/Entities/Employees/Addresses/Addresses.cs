@@ -10,7 +10,6 @@ public class Addresses : Entity
     {
         Id = Guid.CreateVersion7();
     }
-    public Guid Id { get; set; }
     public string Title { get; set; }
     public string FullAddress { get; set; }
     public string MailCode { get; set; }

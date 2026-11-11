@@ -1,9 +1,7 @@
 ﻿using electronic.Application.Interfaces;
-using electronic.Domain.DTOs.PhotographDTOs;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using static System.Net.WebRequestMethods;
 
 namespace electronic.Infrastructure.Service
 {
@@ -96,7 +94,7 @@ namespace electronic.Infrastructure.Service
                     await file.CopyToAsync(stream);
                 }
 
-                return ($"/ProductImages/{uniqueFileName}", true);
+                return ($"{uniqueFileName}", true);
 
             }
             catch (Exception ex)

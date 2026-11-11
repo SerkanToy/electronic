@@ -35,9 +35,9 @@ namespace electronic.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(bool asNoTracking = true)
+        public async Task<IEnumerable<T>> GetAllAsync(bool asNoTracking = true, Expression<Func<T, bool>> predicate = null)
         {
-            var query = asNoTracking ? dbSet.AsNoTracking() : dbSet;
+            var query = asNoTracking || predicate is not null ? dbSet.Where(predicate).AsNoTracking() : dbSet;
             return await query.ToListAsync();
         }
 

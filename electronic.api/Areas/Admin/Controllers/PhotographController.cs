@@ -2,13 +2,13 @@
 using electronic.Application.Interfaces;
 using electronic.Domain.DTOs.PhotographDTOs;
 using electronic.Domain.Entities.Employees;
-using electronic.Domain.Entities.Employees.Product;
 using electronic.Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace electronic.api.Areas.Admin.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Area("Admin")]
     [Route("[area]/[controller]/[action]")]
     [ApiController]
@@ -56,7 +56,7 @@ namespace electronic.api.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ActionName("photograph-add")]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ResponseModel<AdminPhotographAddDto>>> Add([FromServices] ResponseModel responseModel, [FromForm] AdminPhotographAddDto adminPhotographAddDto)
@@ -113,13 +113,13 @@ namespace electronic.api.Areas.Admin.Controllers
                 }
                 return BadRequest(responseModel);
             }
-        }
+        }*/
 
 
         [HttpPost]
-        [ActionName("photograph-addlist")]
+        [ActionName("photograph-add")]
         [Consumes("multipart/form-data")]
-        public async Task<ActionResult<ResponseModel<AdminPhotographAddDto>>> AddList([FromServices] ResponseModel responseModel, [FromForm] IEnumerable<AdminPhotographAddDtos> adminPhotographAddDto)
+        public async Task<ActionResult<ResponseModel<AdminPhotographAddDto>>> Add([FromServices] ResponseModel responseModel, [FromForm] IEnumerable<AdminPhotographAddDtos> adminPhotographAddDto)
         {
             try
             {

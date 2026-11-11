@@ -1,9 +1,9 @@
 ﻿using electronic.Application.IService;
 using electronic.Application.UoW;
-using electronic.Infrastructure.Models;
 using electronik.Domain.Entities.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace electronic.api.Areas.Api.Controllers
 {
@@ -25,5 +25,13 @@ namespace electronic.api.Areas.Api.Controllers
         protected IUnitOfWork unitOfWork  => _unitOfWork ??= httpContext.RequestServices.GetService<IUnitOfWork>();
         protected IAuthService authService => _authService ??= httpContext.RequestServices.GetService<IAuthService>();
         protected ITokenService tokenService => _tokenService ??= httpContext.RequestServices.GetService<ITokenService>();
+
+
+        protected Guid GetUserId()
+        {
+            return Guid.Parse(_httpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        }
+
+
     }
 }
